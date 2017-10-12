@@ -44,8 +44,8 @@ message(STATUS "-DCOVERAGE=${COVERAGE}")
 SET(IROHA_SCHEMA_DIR "${PROJECT_SOURCE_DIR}/schema")
 include_directories(
   ${PROJECT_SOURCE_DIR}/irohad
+  ${PROJECT_SOURCE_DIR}/shared_model
   ${PROJECT_SOURCE_DIR}/libs
-  ${PROJECT_SOURCE_DIR}/libs/gsl/include
   ${IROHA_SCHEMA_DIR}
 )
 
@@ -55,9 +55,7 @@ add_subdirectory(schema)
 add_subdirectory(libs)
 add_subdirectory(irohad)
 add_subdirectory(iroha-cli)
-
-
-link_directories(${PROJECT_BINARY_DIR}/lib)
+add_subdirectory(shared_model)
 
 if(TESTING)
   enable_testing()
