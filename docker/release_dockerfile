@@ -1,0 +1,6 @@
+FROM ubuntu:16.04
+
+ENV IROHA_HOME /opt/iroha
+ENV IROHA_BUILD /opt/iroha/build
+
+COPY iroha.deb /tmp/iroha.deb

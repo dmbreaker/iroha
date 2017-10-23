@@ -29,15 +29,11 @@ jobs:
             ccache --max-size=1G
       - run:
           name: cmake
-          command: cmake -DCOVERAGE=ON -H$IROHA_HOME -B$IROHA_BUILD -DPACKAGE_DEB=ON
+          command: cmake -DCOVERAGE=ON -H$IROHA_HOME -B$IROHA_BUILD -DPACKAGE_DEB=ON -DCMAKE_BUILD_TYPE=Release
       - run:
           name: make
           command: |
             cmake --build $IROHA_BUILD -- -j4
-      - run:
-          name: make package
-          command: |
-            cmake --build $IROHA_BUILD --target package -- -j4
       - save_cache:
           key: build-cache-{{ arch }}-{{ .Branch }}-{{ epoch }}
           paths:
@@ -58,6 +54,18 @@ jobs:
             - compile_commands.json
             - reports
 
+  dockerize:
+    <<: *defaults
+    docker:
+      - image: hyperledger/iroha-docker-develop
+    steps:
+      - checkout
+      - attach_workspace:
+         at: /opt/iroha/build
+      - run:
+          name: Copy deb file
+          command: |
+             cp $IROHA_BUILD/iroha-*.deb $IROHA_HOME/build/iroha.deb
 
 
   # used to push info about issues to github
@@ -186,6 +194,7 @@ workflows:
       # macos-build/build -> sonar -> dockerize
       - macos-build
       - build
+      - dockerize
       - sonar-pr:
           requires:
             - build
